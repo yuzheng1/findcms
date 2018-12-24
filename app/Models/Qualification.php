@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class Qualification{
+class Qualification extends Models{
 
 	/**
 	 * 关联到模型的数据表

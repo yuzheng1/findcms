@@ -10,6 +10,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use App\Models\Users;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -24,8 +25,8 @@ class UserController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('首页')
+            ->description('用户首页')
             ->body($this->grid());
     }
 
@@ -39,8 +40,8 @@ class UserController extends Controller
     public function show($id, Content $content)
     {
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('详情')
+            ->description('用户详情')
             ->body($this->detail($id));
     }
 
@@ -54,8 +55,8 @@ class UserController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('编辑')
+            ->description('用户编辑')
             ->body($this->form()->edit($id));
     }
 
@@ -68,8 +69,8 @@ class UserController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('添加')
+            ->description('用户添加')
             ->body($this->form());
     }
 
@@ -115,13 +116,9 @@ class UserController extends Controller
         $show->mobile('手机号');
         $show->realname('姓名');
         $show->id_card('身份证号码');
-        $show->sex('性别')->display(function($sex){
-            return $sex == 1? '女' : '男' ;
-        });
+        $show->sex('性别')->using(['男', '女']);
         $show->email('邮箱');
-        $show->member_type('类型')->display(function($member_type){
-            return $member_type == 1? '求助者' : '寻找者' ;
-        });
+        $show->member_type('类型')->using(['寻找者', '求助者']);
         $show->created_at('Created at');
         $show->updated_at('Updated at');
 
@@ -137,15 +134,86 @@ class UserController extends Controller
     {
         $form = new Form(new User);
 
-        $form->id('ID');
-        $form->nickname('昵称');
-        $form->mobile('手机号');
-        $form->realname('姓名');
-        $form->id_card('身份证号码');
-        $form->sex('性别');
-        $form->email('邮箱');
-        $form->member_type('类型');
-        $form->text('remember_token', 'Remember token');
+        $form->display('id','ID');
+        $form->text('nickname','昵称')->rules(
+            "required|min:2|max:10",
+            [
+                'required' => '昵称必须',
+                'min' => '昵称不得小于两个字符',
+                'max' => '昵称不得大于十个字符'
+            ]
+        );
+        $form->number('mobile','手机号')->rules(
+            [
+                "regex" => "/^1[3456789]\d{9}$/",
+                "required_without_all" => 'email'
+            ],
+            [
+                'required_without_all' => '手机号或邮箱必须',
+                'regex' => '手机号码不合法'
+            ]
+        );
+        $form->text('realname','姓名')->rules(
+            "min:2",
+            [
+                "min" => "姓名不得少于两个字符",
+            ]
+        );
+        $form->text('id_card', '身份证号码')->rules(
+            [
+                "regex" => "/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$/",
+            ],
+            [
+                "regex" => '身份证号码格式错误'
+            ]
+        );
+        $sexArr = [
+            '男',
+            '女'
+        ];
+        $form->select('sex','性别')->options($sexArr)->rules(
+            [
+                Rule::in([0,1])
+            ],
+            [
+                "in" => '性别范围错误'
+            ]
+        );
+        $form->text('email','邮箱')->rules(
+            'email|required_without_all:mobile',
+            [
+                "email" => '邮箱格式错误',
+                "required_without_all" => '手机号码或邮箱必须'
+            ]
+        );
+        $member_type_arr = [
+            '寻找者',
+            '求助者'
+        ];
+        $form->select('member_type', '类型')->options($member_type_arr)->rules(
+            [
+                "required",
+                Rule::in([0,1])
+            ],
+            [
+                "required" => "用户类型必须",
+                "in" => "用户类型范围错误"
+            ]
+        );
+        $is_delete_arr = [
+            '启用',
+            '禁用'
+        ];
+        $form->select("is_delete", "状态")->options($is_delete_arr)->rules([
+            [
+                "required",
+                Rule::in([0,1])
+            ],
+            [
+                "required" => "状态必须",
+                "in" => "状态范围错误"
+            ]
+        ]);
 
         return $form;
     }

@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Models\Trait;
+use App\Models\Traits\UsersTrait;
 
 class Users extends Models
 {
@@ -41,9 +41,9 @@ class Users extends Models
 	 * @param  dateTime $value int
 	 * @return dateTime     int
 	 */
-	public function fromDateTime($value){
-		return strtotime(parent::fromDateTime($value));
-	}
+//	public function fromDateTime($value){
+//		return strtotime(parent::fromDateTime($value));
+//	}
 
 	//自定义用于存储时间戳的字段名称,可以在模型中设置CREATED_AT 和 UPDATED_AT 常量
 	//const CREATED_AT = 'regtime';
@@ -53,10 +53,10 @@ class Users extends Models
 	 * 从数据库获取的时间为时间戳格式
 	 * @return string
 	 */
-	public function getDateFormat()
-	{
-		return 'U';
-	}
+//	public function getDateFormat()
+//	{
+//		return 'U';
+//	}
 
 	/**
 	 * 批量赋值黑名单

@@ -1,5 +1,5 @@
 <?php
-namespace App\Models\Trait;
+namespace App\Models\Traits;
 
 use App\Models\Qualification;
 
@@ -9,7 +9,7 @@ use App\Models\Qualification;
  * @date 2018-12-23
  * @package App\Models\Trait
  */
-class UsersTrait{
+Trait UsersTrait{
 
 	public function qualification()
 	{
