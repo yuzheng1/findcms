@@ -19,7 +19,7 @@ Trait UsersTrait{
 
 	public function findnotice()
     {
-        return $this->hasOne(FindNotice::class);
+        return $this->hasOne(FindNotice::class, "release_user");
     }
 
 }

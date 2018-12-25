@@ -53,6 +53,15 @@ return [
         'namespace' => 'App\\Admin\\Controllers',
 
         'middleware' => ['web', 'admin'],
+
+        'api' => [
+
+            'prefix' => 'api',
+
+            'namespace' => '\\Api',
+
+        ]
+
     ],
 
     /*

@@ -13,7 +13,7 @@ Trait FindNoticeTrait{
 
 	public function users()
 	{
-		return $this->belongsTo(Users::class);
+		return $this->belongsTo(Users::class, "release_user");
 	}
 
 }

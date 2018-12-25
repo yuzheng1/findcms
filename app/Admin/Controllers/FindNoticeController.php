@@ -3,8 +3,8 @@
 namespace App\Admin\Controllers;
 
 use App\Models\FindNotice;
-use App\Models\Users;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -111,26 +111,27 @@ class FindNoticeController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(FindNotice::findOrFail($id));
-
-        $show->id('Id');
-        $show->release_user('Release user');
-        $show->province('省份');
-        $show->city('城市');
-        $show->title('标题');
-        $show->name('姓名');
-        $show->sex('性别')->using([
-            "男",
-            "女"
-        ]);
-        $show->age('年龄');
-        $show->desc('详情');
-        $show->contact_name('联系人姓名');
-        $show->contact_mobile('联系电话');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
-
-        return $show;
+//        $show = new Show(FindNotice::findOrFail($id));
+        $shows = Admin::show(FindNotice::findOrFail($id), function(Show $show){
+            $show->id('ID');
+            $show->users('用户信息');
+            $show->province('省份');
+            $show->city('城市');
+            $show->title('标题');
+            $show->name('姓名');
+            $show->sex('性别')->using([
+                "男",
+                "女"
+            ]);
+            $show->age('年龄');
+            $show->desc('详情');
+            $show->contact_name('联系人姓名');
+            $show->contact_mobile('联系电话');
+            $show->created_at('Created at');
+            $show->updated_at('Updated at');
+        });
+        dd(1);
+        return $shows;
     }
 
     /**
@@ -141,33 +142,99 @@ class FindNoticeController extends Controller
     protected function form()
     {
         $grid = Admin::form(FindNotice::class, function(Form $form){
-            $form->display("users.nickname", "昵称");
-            $form->text('province', '省份');
-            $form->text('city', '城市');
-            $form->text('title', '标题');
-            $form->text('name', '姓名');
+            $form->display("users.id", "发布人ID");
+            $form->display("users.nickname", "发布人昵称");
+            $form->text('province', '省份')->rules(
+                "required",
+                [
+                    "required" => "省份必须",
+                ]
+            );
+            $form->text('city', '城市')->rules(
+                "required",
+                [
+                    "required" => "城市必须"
+                ]
+            );
+            $form->text('title', '标题')->rules(
+                "required",
+                [
+                    "required" => "标题必须"
+                ]
+            );
+            $form->text('name', '姓名')->rules(
+                "required|min:2",
+                [
+                    "required" => "姓名必须",
+                    "min" => "姓名不可少于两个字符"
+                ]
+            );
             $sexArr = [
                 "男",
                 "女"
             ];
-            $form->select('sex', '性别')->options($sexArr);
-            $form->number('age', '年龄');
-            $form->textarea('desc', '详情');
-            $form->text('contact_name', '联系人姓名');
-            $form->text('contact_mobile', '联系人手机号码');
+            $form->select('sex', '性别')->options($sexArr)->rules(
+                [
+                    Rule::in([0,1])
+                ],
+                [
+                    "in" => "性别范围错误"
+                ]
+            );
+            $form->number('age', '年龄')->rules(
+                "numeric",
+                [
+                    "numeric" => "年龄必须是数字"
+                ]
+            );
+            $form->textarea('desc', '详情')->rules(
+                "required",
+                [
+                    "required" => "详情必须"
+                ]
+            );
+            $form->text('contact_name', '联系人姓名')->rules(
+                "min:2",
+                [
+                    "min" => "联系人姓名不得少于两位字符"
+                ]
+            );
+            $form->text('contact_mobile', '联系人手机号码')->rules(
+                [
+                    "required",
+                    "regex" => "/^1[3456789]\d{9}$/",
+                ],
+                [
+                    "required" => "联系人手机号码必须",
+                    "regex" => "联系人手机号码格式错误"
+                ]
+            );
             $statusArr = [
                 "审核中",
                 "审核通过",
                 "审核不通过",
             ];
-            $form->radio('status', 'Status')->options($statusArr);
+            $form->radio('status', 'Status')->options($statusArr)->rules(
+                [
+                    Rule::in([0,1,2])
+                ],
+                [
+                    "in" => "审核状态范围错误"
+                ]
+            );
             $is_delete_arr = [
                 'on' => ['value' => 1, 'text' => '删除', 'color'=>'danger'],
                 'off' => ['value' => 0, 'text' => '不删除', 'color' => 'success']
             ];
-            $form->switch('is_delete', 'Is delete')->states($is_delete_arr);
+            $form->switch('is_delete', 'Is delete')->states($is_delete_arr)->rules(
+                [
+                    Rule::in([0,1])
+                ],
+                [
+                    "in" => "需求状态范围错误"
+                ]
+            );
         });
-        dd($grid);
         return $grid;
     }
 }
