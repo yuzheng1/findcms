@@ -3,12 +3,14 @@
 namespace App\Admin\Controllers;
 
 use App\Models\FindNotice;
+use App\Models\Users;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Encore\Admin\Facades\Admin;
 
 class FindNoticeController extends Controller
 {
@@ -138,25 +140,34 @@ class FindNoticeController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new FindNotice);
-
-//        $form->number('release_user', 'Release user');
-        $form->text('province', '省份');
-        $form->text('city', '城市');
-        $form->text('title', '标题');
-        $form->text('name', '姓名');
-        $sexArr = [
-            "男",
-            "女"
-        ];
-        $form->select('sex', '性别')->options($sexArr);
-        $form->number('age', '年龄');
-        $form->textarea('desc', '详情');
-        $form->text('contact_name', '联系人姓名');
-        $form->text('contact_mobile', '联系人手机号码');
-        $form->switch('status', 'Status');
-        $form->switch('is_delete', 'Is delete');
-
-        return $form;
+        $grid = Admin::form(FindNotice::class, function(Form $form){
+            $form->display("users.nickname", "昵称");
+            $form->text('province', '省份');
+            $form->text('city', '城市');
+            $form->text('title', '标题');
+            $form->text('name', '姓名');
+            $sexArr = [
+                "男",
+                "女"
+            ];
+            $form->select('sex', '性别')->options($sexArr);
+            $form->number('age', '年龄');
+            $form->textarea('desc', '详情');
+            $form->text('contact_name', '联系人姓名');
+            $form->text('contact_mobile', '联系人手机号码');
+            $statusArr = [
+                "审核中",
+                "审核通过",
+                "审核不通过",
+            ];
+            $form->radio('status', 'Status')->options($statusArr);
+            $is_delete_arr = [
+                'on' => ['value' => 1, 'text' => '删除', 'color'=>'danger'],
+                'off' => ['value' => 0, 'text' => '不删除', 'color' => 'success']
+            ];
+            $form->switch('is_delete', 'Is delete')->states($is_delete_arr);
+        });
+        dd($grid);
+        return $grid;
     }
 }

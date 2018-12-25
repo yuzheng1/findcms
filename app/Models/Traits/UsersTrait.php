@@ -2,6 +2,7 @@
 namespace App\Models\Traits;
 
 use App\Models\Qualification;
+use App\Models\FindNotice;
 
 /**
  * 模型Trait类
@@ -15,5 +16,10 @@ Trait UsersTrait{
 	{
 		return $this->belongsToMany(Qualification::class);
 	}
+
+	public function findnotice()
+    {
+        return $this->hasOne(FindNotice::class);
+    }
 
 }
