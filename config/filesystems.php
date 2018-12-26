@@ -63,6 +63,20 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        'qiniu' => [
+            'driver' => 'qiniu',
+            'domains' => [
+                'default' => 'seek.image.zhuxv.com', //您的七牛域名
+                'https' => '',  //您的https域名
+                'custom' => ''  //您的自定义域名
+            ],
+            'access_key' => '',
+            'secret_key' => '',
+            'bucket' => '',  //bucket名字
+            'notify_url' => '',  //持久化处理回调地址
+            'url' => '', //填写文件访问根url
+        ]
+
     ],
 
 ];

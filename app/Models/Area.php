@@ -1,8 +1,10 @@
 <?php
 namespace App\Models;
 
-class Area extends Models{
+use App\Models\Traits\AreaTrait;
 
+class Area extends Models{
+    use AreaTrait;
     /**
      * 关联到模型的数据表
      * 默认规则是模型类名的复数作为与其对应的表名

@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        //注册类库
+        $this->app->singleton(\zgldh\QiniuStorage\QiniuFilesystemServiceProvider::class);
     }
 }

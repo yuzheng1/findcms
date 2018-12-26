@@ -2,8 +2,10 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Area;
 use App\Models\FindNotice;
 use App\Http\Controllers\Controller;
+use App\Models\Users;
 use Illuminate\Validation\Rule;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -84,7 +86,7 @@ class FindNoticeController extends Controller
         $grid = new Grid(new FindNotice);
 
         $grid->id('ID');
-        $grid->release_user('Release user');
+        $grid->column('users.nickname', '发布者昵称');
         $grid->province('省份');
         $grid->city('城市');
         $grid->column('title','标题'); //title方法冲突
@@ -113,10 +115,19 @@ class FindNoticeController extends Controller
     {
 //        $show = new Show(FindNotice::findOrFail($id));
         $shows = Admin::show(FindNotice::findOrFail($id), function(Show $show){
+            $model = new Area();
             $show->id('ID');
-            $show->users('用户信息');
-            $show->province('省份');
-            $show->city('城市');
+            $show->users('发布人信息',function($user){
+                $user->id("ID");
+                $user->nickname("昵称");
+                return $user;
+            });
+            $show->province('省份')->as(function($province)use($model){
+                return $model->getAddressData($province)->name;
+            });
+            $show->city('城市')->as(function($city)use($model){
+                return $model->getAddressData($city)->name;
+            });
             $show->title('标题');
             $show->name('姓名');
             $show->sex('性别')->using([
@@ -130,7 +141,6 @@ class FindNoticeController extends Controller
             $show->created_at('Created at');
             $show->updated_at('Updated at');
         });
-        dd(1);
         return $shows;
     }
 
@@ -142,18 +152,23 @@ class FindNoticeController extends Controller
     protected function form()
     {
         $grid = Admin::form(FindNotice::class, function(Form $form){
+            $model = new Area();
             $form->display("users.id", "发布人ID");
             $form->display("users.nickname", "发布人昵称");
-            $form->text('province', '省份')->rules(
-                "required",
+            $form->select('province', '省份')->options($model->getProvinceList())->load("city", "/admin/api/area")->rules(
+                "required|numeric",
                 [
                     "required" => "省份必须",
+                    "numeric" => '省份格式错误'
                 ]
             );
-            $form->text('city', '城市')->rules(
-                "required",
+            $form->select('city', '城市')->options(function($id)use($model){
+                return $model->getSameLevelCityList($id);
+            })->rules(
+                "required|numeric",
                 [
-                    "required" => "城市必须"
+                    "required" => "城市必须",
+                    "numeric" => "城市格式错误"
                 ]
             );
             $form->text('title', '标题')->rules(
@@ -202,7 +217,7 @@ class FindNoticeController extends Controller
             $form->text('contact_mobile', '联系人手机号码')->rules(
                 [
                     "required",
-                    "regex" => "/^1[3456789]\d{9}$/",
+                    "regex:/^1[3456789]\d{9}$/",
                 ],
                 [
                     "required" => "联系人手机号码必须",
