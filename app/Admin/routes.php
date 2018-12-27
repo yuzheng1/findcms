@@ -14,11 +14,11 @@ Route::group([
     $router->resource('users', UserController::class);
     $router->resource('findnotice', FindNoticeController::class);
     $router->group([
-        "prefix" => config("admin.route.api.prefix"),
-        "namespace" => config("admin.route.api.namespace")
+        "prefix"     => config("admin.route.api.prefix"),
+        "namespace"  => config("admin.route.api.namespace")
     ], function (Router $router) {
         $router->get("area", "AreaController@index");
-        $router->get("uploads", "UploadsController@index");
+        $router->post("uploads", "UploadsController@index");
     });
 
 });

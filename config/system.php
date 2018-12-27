@@ -11,8 +11,8 @@ return [
     |
     */
 
-    'cdn' => env("SYSTEM_CDN", 'http://seekadmin.zhuxv.com/'),
+    'cdn' => env("SYSTEM_CDN"),
 
-    'prefix' => env("SYSTEM_PREFIX", 'http'),
+    'prefix' => env("SYSTEM_PREFIX"),
 
 ];

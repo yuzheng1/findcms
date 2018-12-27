@@ -8,6 +8,6 @@ class UploadsController extends Controller{
 
     public function index(Request $request)
     {
-        dd(222);
+        file_put_contents(__DIR__."/../../../log.txt", json_encode($request));
     }
 }
