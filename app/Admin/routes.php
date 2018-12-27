@@ -18,6 +18,7 @@ Route::group([
         "namespace" => config("admin.route.api.namespace")
     ], function (Router $router) {
         $router->get("area", "AreaController@index");
+        $router->get("uploads", "UploadsController@index");
     });
 
 });

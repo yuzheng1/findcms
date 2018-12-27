@@ -2,6 +2,7 @@
 namespace App\Models\Traits;
 
 use App\Models\Users;
+use App\Models\FindImages;
 
 /**
  * 模型需求Trait类
@@ -15,5 +16,10 @@ Trait FindNoticeTrait{
 	{
 		return $this->belongsTo(Users::class, "release_user");
 	}
+
+	public function findimages()
+    {
+        return $this->hasMany(FindImages::class, "out_id");
+    }
 
 }

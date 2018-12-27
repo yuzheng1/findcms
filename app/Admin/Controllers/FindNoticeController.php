@@ -5,7 +5,6 @@ namespace App\Admin\Controllers;
 use App\Models\Area;
 use App\Models\FindNotice;
 use App\Http\Controllers\Controller;
-use App\Models\Users;
 use Illuminate\Validation\Rule;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
@@ -13,6 +12,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use Encore\Admin\Facades\Admin;
+use Encore\Admin\Form\NestedForm;
 
 class FindNoticeController extends Controller
 {
@@ -155,6 +155,28 @@ class FindNoticeController extends Controller
             $model = new Area();
             $form->display("users.id", "发布人ID");
             $form->display("users.nickname", "发布人昵称");
+            $form->hasMany("findimages", function (NestedForm $form){
+                $form->image("url",'幻灯片')->uniqueName();
+                $cover_arr = [
+                    'on' => ['value' => 1, 'text' => '封面', 'color'=>'danger'],
+                    'off' => ['value' => 0, 'text' => '非封面', 'color' => 'success']
+                ];
+                $form->switch("cover", "是否为封面")->options($cover_arr)->rules(
+                    [
+                        Rule::in("on", "off")
+                    ],
+                    [
+                        "in" => "封面选择范围错误",
+                    ]
+                );
+                $form->number("index", "排序")->default(1)->rules(
+                    "numeric",
+                    [
+                        "numeric" => '排序格式错误'
+                    ]
+                );
+                return $form;
+            });
             $form->select('province', '省份')->options($model->getProvinceList())->load("city", "/admin/api/area")->rules(
                 "required|numeric",
                 [
@@ -243,7 +265,7 @@ class FindNoticeController extends Controller
             ];
             $form->switch('is_delete', 'Is delete')->states($is_delete_arr)->rules(
                 [
-                    Rule::in([0,1])
+                    Rule::in(['on','off'])
                 ],
                 [
                     "in" => "需求状态范围错误"

@@ -70,11 +70,11 @@ return [
                 'https' => '',  //您的https域名
                 'custom' => ''  //您的自定义域名
             ],
-            'access_key' => '',
-            'secret_key' => '',
-            'bucket' => '',  //bucket名字
-            'notify_url' => '',  //持久化处理回调地址
-            'url' => '', //填写文件访问根url
+            'access_key' => 'WdOetH7waXVMHc4__xYRDEEi9fdFKyLS8hn0LX2y',
+            'secret_key' => '8Jts4Wg4YREDRT_BMTVyYVxsdfgzKd0p0MffM7y1',
+            'bucket' => 'seek',  //bucket名字
+            'notify_url' => config("system.prefix", 'http')."://".config("system.cnd", "seekadmin.zhuxv.com")."/admin/api/uploads",  //持久化处理回调地址
+            'url' => 'http://seek.admin.zhuxv.com/', //填写文件访问根url
         ]
 
     ],
