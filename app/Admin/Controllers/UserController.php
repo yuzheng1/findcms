@@ -145,12 +145,22 @@ class UserController extends Controller
         );
         $form->number('mobile','手机号')->rules(
             [
-                "regex" => "/^1[3456789]\d{9}$/",
-                "required_without_all" => 'email'
+                "regex:/^1[3456789]\d{9}$/",
+                "required_without_all:email",
+                "unique:users,mobile"
             ],
             [
                 'required_without_all' => '手机号或邮箱必须',
-                'regex' => '手机号码不合法'
+                'regex' => '手机号码不合法',
+                "unique" => "手机号码已存在"
+            ]
+        );
+        $form->password("password", "密码")->rules(
+            "required|digits_between:6,18|alpha_dash",
+            [
+                "required" => "请输入密码",
+                "between" => "密码不少于6个字符且不超过18位字符",
+                "alpha_dash" => "密码只能有数字字母下划线"
             ]
         );
         $form->text('realname','姓名')->rules(
@@ -161,7 +171,7 @@ class UserController extends Controller
         );
         $form->text('id_card', '身份证号码')->rules(
             [
-                "regex" => "/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$/",
+                "regex:/^([\d]{17}[xX\d]|[\d]{15})$/",
             ],
             [
                 "regex" => '身份证号码格式错误'
@@ -180,10 +190,11 @@ class UserController extends Controller
             ]
         );
         $form->text('email','邮箱')->rules(
-            'email|required_without_all:mobile',
+            'email|required_without_all:mobile|unique:users,email',
             [
                 "email" => '邮箱格式错误',
-                "required_without_all" => '手机号码或邮箱必须'
+                "required_without_all" => '手机号码或邮箱必须',
+                "unique" => '邮箱已存在'
             ]
         );
         $member_type_arr = [

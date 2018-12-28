@@ -14,7 +14,7 @@ Trait UsersTrait{
 
 	public function qualification()
 	{
-		return $this->belongsToMany(Qualification::class);
+		return $this->hasOne(Qualification::class, "user_id");
 	}
 
 	public function findnotice()

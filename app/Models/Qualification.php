@@ -1,7 +1,10 @@
 <?php
 namespace App\Models;
 
+use App\Models\Traits\QualificationTrait;
+
 class Qualification extends Models{
+    use QualificationTrait;
 
 	/**
 	 * 关联到模型的数据表

@@ -19,4 +19,16 @@ class FindImages extends Models{
      * @var string
      */
     public $primaryKey = 'id';
+
+    /**
+     * 批量赋值白名单
+     * @var array
+     */
+    protected $fillable = [ "url" , "index" , "out_id" , "cover" ];
+
+    /**
+     * 定义updated_at,用于忽略updated_at字段
+     * @var null
+     */
+    const UPDATED_AT = null;
 }

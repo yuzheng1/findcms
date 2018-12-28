@@ -155,13 +155,13 @@ class FindNoticeController extends Controller
             $model = new Area();
             $form->display("users.id", "发布人ID");
             $form->display("users.nickname", "发布人昵称");
-            $form->hasMany("findimages", function (NestedForm $form){
-                $form->image("url",'幻灯片')->uniqueName();
+            $form->hasMany("findimages", function (NestedForm $nestedForm){
+                $nestedForm->image("url",'幻灯片')->uniqueName();
                 $cover_arr = [
                     'on' => ['value' => 1, 'text' => '封面', 'color'=>'danger'],
                     'off' => ['value' => 0, 'text' => '非封面', 'color' => 'success']
                 ];
-                $form->switch("cover", "是否为封面")->options($cover_arr)->rules(
+                $nestedForm->switch("cover", "是否为封面")->options($cover_arr)->rules(
                     [
                         Rule::in("on", "off")
                     ],
@@ -169,13 +169,13 @@ class FindNoticeController extends Controller
                         "in" => "封面选择范围错误",
                     ]
                 );
-                $form->number("index", "排序")->default(1)->rules(
+                $nestedForm->number("index", "排序")->default(1)->rules(
                     "numeric",
                     [
                         "numeric" => '排序格式错误'
                     ]
                 );
-                return $form;
+                return $nestedForm;
             });
             $form->select('province', '省份')->options($model->getProvinceList())->load("city", "/admin/api/area")->rules(
                 "required|numeric",
