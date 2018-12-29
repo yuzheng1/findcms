@@ -14,6 +14,7 @@ Route::group([
     $router->resource('users', UserController::class);
     $router->resource('findnotice', FindNoticeController::class);
     $router->resource('qualification', QualifiedController::class);
+    $router->resource('message', MessageController::class);
     $router->group([
         "prefix"     => config("admin.route.api.prefix"),
         "namespace"  => config("admin.route.api.namespace")

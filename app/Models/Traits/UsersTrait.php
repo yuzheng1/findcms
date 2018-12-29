@@ -3,6 +3,7 @@ namespace App\Models\Traits;
 
 use App\Models\Qualification;
 use App\Models\FindNotice;
+use App\Models\Message;
 
 /**
  * 模型Trait类
@@ -20,6 +21,11 @@ Trait UsersTrait{
 	public function findnotice()
     {
         return $this->hasOne(FindNotice::class, "release_user");
+    }
+
+    public function message()
+    {
+        return $this->hasMany(Message::class, "uid");
     }
 
 }
