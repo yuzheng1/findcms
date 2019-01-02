@@ -83,7 +83,7 @@ class FindNoticeService extends CommonService {
                 $this->age_rules(),
                 $this->age_rules_message()
             );
-            $form->textarea('desc', '详情')->rules(
+            $form->editor('desc', '详情')->rules(
                 $this->desc_rules(),
                 $this->desc_rules_message()
             );

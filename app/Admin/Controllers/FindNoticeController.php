@@ -3,7 +3,6 @@
 namespace App\Admin\Controllers;
 
 use App\Http\Service\FindNoticeService;
-use App\Models\Area;
 use App\Models\FindNotice;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
